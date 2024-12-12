@@ -1,0 +1,65 @@
+/* src/components/taskScheduler/TaskScheduler.css */
+.task-scheduler {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+  }
+  
+  .task-scheduler h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .task-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .task-form input,
+  .task-form button {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .task-form input:focus,
+  .task-form button:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .task-list {
+    margin-top: 30px;
+  }
+  
+  .task-item {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+  }
+  
+  .task-item p {
+    margin: 5px 0;
+  }
+  
+  .task-item strong {
+    font-size: 1.2rem;
+  }
+  
