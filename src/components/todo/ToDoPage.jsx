@@ -1,31 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TextField } from "@mui/material";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "./todopage.css";
 
 const TodoPage = () => {
-  const [tasks, setTasks] = useState([
-    {
-      task: "Complete React project",
-      date: "2024-12-12",
-      timeRange: "9:00 AM - 12:00 PM",
-    },
-    {
-      task: "Attend meeting with client",
-      date: "2024-12-13",
-      timeRange: "2:00 PM - 4:00 PM",
-    },
-    {
-      task: "Submit the report",
-      date: "2024-12-15",
-      timeRange: "10:00 AM - 11:30 AM",
-    },
-  ]);
+  const [tasks, setTasks] = useState([]);
   const [taskInput, setTaskInput] = useState("");
   const [dateInput, setDateInput] = useState("");
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
+
+  // Load tasks from localStorage when the component mounts
+  useEffect(() => {
+    const savedTasks = JSON.parse(localStorage.getItem("tasks"));
+    if (savedTasks) {
+      setTasks(savedTasks);
+    }
+  }, []);
+
+  // Save tasks to localStorage whenever they change
+  useEffect(() => {
+    if (tasks.length > 0) {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+  }, [tasks]);
 
   const addTask = () => {
     if (
@@ -34,14 +33,12 @@ const TodoPage = () => {
       startTime &&
       endTime
     ) {
-      setTasks((prevTasks) => [
-        ...prevTasks,
-        {
-          task: taskInput,
-          date: dateInput,
-          timeRange: `${startTime.format("h:mm A")} - ${endTime.format("h:mm A")}`,
-        },
-      ]);
+      const newTask = {
+        task: taskInput,
+        date: dateInput,
+        timeRange: `${startTime.format("h:mm A")} - ${endTime.format("h:mm A")}`,
+      };
+      setTasks((prevTasks) => [...prevTasks, newTask]);
       setTaskInput("");
       setDateInput("");
       setStartTime(null);
