@@ -68,3 +68,9 @@
         display: none;
     }
 }
+.tasks-icon {
+    width: 2em; /* 1em is relative to the font size of the parent element */
+    height: 2em;
+    color: #87888b; /* Default color for the icon */
+    transition: color 0.3s ease; /* Optional: Add transition for color change on hover */
+  }
