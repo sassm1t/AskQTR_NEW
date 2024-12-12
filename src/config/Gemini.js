@@ -9,18 +9,17 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 
-const MODEL_NAME = "gemini-1.0-pro";
-const API_KEY = "Your Api Key ";
 
 async function runChat(prompt) {
-  const genAI = new GoogleGenerativeAI(API_KEY);
-  const model = genAI.getGenerativeModel({ model: MODEL_NAME });
-
+  const genAI = new GoogleGenerativeAI('AIzaSyAHpX_K6VMQDfbzbgM9aKS7xMutokLD8a0');
+  const model = genAI.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    systemInstruction: "You are my personal assistant and will help with my tasks planning, to-do, calender etc\n",
+  });
   const generationConfig = {
-    temperature: 0.9,
-    topK: 1,
-    topP: 1,
-    maxOutputTokens: 2048,
+    temperature: 0,
+    topP: 0.7,
+    topK: 40,
   };
 
   const safetySettings = [

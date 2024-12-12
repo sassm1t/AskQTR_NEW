@@ -19,7 +19,7 @@ const Main = () => {
 	return (
 		<div className="main">
 			<div className="nav">
-				<p>Gemini</p>
+				<p>AskQTR</p>
 				<img src={assets.user} alt="" />
 			</div>
 			<div className="main-container">
@@ -27,49 +27,49 @@ const Main = () => {
 					<>
 						<div className="greet">
 							<p>
-								<span>Hello , Dev </span>
+								<span>Hello  </span>
 							</p>
-							<p>How Can i Help You Today?</p>
+							<p>How Can i Help You PLAN Today?</p>
 						</div>
 						<div className="cards">
 							<div
 								className="card"
 								onClick={() =>
-									handleCardClick("Suggest Some Place To Visit In India.")
+									handleCardClick("What task do I have on my schedule today?")
 								}
 							>
-								<p>Suggest Some Place To Visit In India.</p>
+								<p>What task do I have on my schedule today?</p>
 								<img src={assets.compass_icon} alt="" />
 							</div>
 							<div
 								className="card"
 								onClick={() =>
 									handleCardClick(
-										"Explain the process of photosynthesis in simple terms"
+										"Help me plan my work"
 									)
 								}
 							>
-								<p>Explain the process of photosynthesis in simple terms </p>
+								<p>Help me plan my work</p>
 								<img src={assets.message_icon} alt="" />
 							</div>
 							<div
 								className="card"
 								onClick={() =>
-									handleCardClick("How do you create a responsive navbar using CSS and JavaScript?")
+									handleCardClick("What meetings do I have today?")
 								}
 							>
-								<p>How do you create a responsive navbar using CSS and JavaScript?</p>
+								<p>What meetings do I have today?</p>
 								<img src={assets.bulb_icon} alt="" />
 							</div>
 							<div
 								className="card"
 								onClick={() => {
 									handleCardClick(
-										"What are some essential skills for becoming a front-end developer?"
+										"Summerize all undone tasks"
 									);
 								}}
 							>
-								<p>What are some essential skills for becoming a front-end developer?</p>
+								<p>Summerize all undone tasks</p>
 								<img src={assets.code_icon} alt="" />
 							</div>
 						</div>
@@ -119,8 +119,8 @@ const Main = () => {
 					</div>
 					<div className="bottom-info">
 						<p>
-							Gemini may display inaccurate info, including about people, so
-							double-check its responses. Your privacy & Gemini Apps
+							AskQTR may display inaccurate info, including about people, so
+							double-check its responses.
 						</p>
 					</div>
 				</div>
