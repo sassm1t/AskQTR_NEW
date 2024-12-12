@@ -108,7 +108,7 @@ const Main = () => {
 								<p>
 									<span>Hello  </span>
 								</p>
-								<p>How Can i Help You PLAN Today?</p>
+								<p>How can I help you PLAN today?</p>
 							</div>
 							<div className="cards">
 								<div
