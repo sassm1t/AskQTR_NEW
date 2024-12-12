@@ -10,6 +10,17 @@ const ContextProvider = (props) => {
 	const [showResults, setShowResults] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [resultData, setResultData] = useState("");
+	const [chatHistory, setChatHistory] = useState([
+		{
+		  role: "model",
+		  parts: [
+			{
+			  text:
+				"You are my personal assistant named AskQTR. Your job is to help me manage my schedule, my to-do list, task, goals, identify undone work, etc.",
+			},
+		  ],
+		},
+	  ]);
 
 	const delayPara = (index, nextWord) => {
 		setTimeout(function () {
@@ -21,46 +32,44 @@ const ContextProvider = (props) => {
         setShowResults(false)
     }
 
-	const onSent = async (prompt) => {
+	const onSent = async () => {
 		setResultData("");
 		setLoading(true);
 		setShowResults(true);
-        let response;
-        if(prompt !== undefined){
-            response = await runChat(prompt);
-            setRecentPrompt(prompt)
-        }else{
-            setPrevPrompts(prev=>[...prev,input]);
-            setRecentPrompt(input);
-            response=await runChat(input);
-        }
-		
+		let response;
+		setPrevPrompts((prev) => [...prev, input]);
+		setRecentPrompt(input);
+	  
 		try {
-			
-			
-			let responseArray = response.split("**");
-            let newResponse = "";
-			for (let i = 0; i < responseArray.length; i++) {
-				if (i === 0 || i % 2 !== 1) {
-					newResponse += responseArray[i];
-				} else {
-					newResponse += "<b>" + responseArray[i] + "</b>";
-				}
-			}
-			let newResponse2 = newResponse.split("*").join("<br/>");
-			let newResponseArray = newResponse2.split("");
-			for (let i = 0; i < newResponseArray.length; i++) {
-				const nextWord = newResponseArray[i];
-				delayPara(i, nextWord + "");
-			}
+		  // Add the user's prompt to the history
+		  const newMessage = {
+			role: "user",
+			parts: [{ text: input }],
+		  };
+	  
+		  // Update the chat history with the new user message
+		  const newChatHistory = [...chatHistory, newMessage];
+	  
+		  // Send the updated chat history to Gemini
+		  response = await runChat(input, newChatHistory);
+	  
+		  // Update the result with the new response
+		  setResultData(response);
+	  
+		  // Add the response from Gemini to the history
+		  const modelResponse = {
+			role: "model",
+			parts: [{ text: response }],
+		  };
+	  
+		  setChatHistory((prevHistory) => [...prevHistory, newMessage, modelResponse]);
 		} catch (error) {
-			console.error("Error while running chat:", error);
-			// Handle error appropriately
+		  console.error("Error while running chat:", error);
 		} finally {
-			setLoading(false);
-			setInput("");
+		  setLoading(false);
+		  setInput(""); // Clear input field
 		}
-	};
+	  };
 
 	const contextValue = {
 		prevPrompts,
@@ -74,6 +83,7 @@ const ContextProvider = (props) => {
 		loading,
 		resultData,
 		newChat,
+		chatHistory, 
 	};
 
 	return (

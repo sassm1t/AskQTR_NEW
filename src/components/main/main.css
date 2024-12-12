@@ -154,3 +154,45 @@ animation: loader 4s infinite linear;
     font-weight: 300px;
     line-height: 1.8;
 }
+.chat-results-container {
+    max-height: calc(100vh - 300px);  
+    overflow-y: auto;  
+    padding-bottom: 16px;  
+  }
+  
+  .result {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;  
+    overflow: visible;  
+  }
+  
+  .result-data {
+    display: block;
+    word-wrap: break-word;  
+    white-space: normal;  
+    max-width: 100%;  
+    overflow: visible; 
+  }
+  
+  .result-data p {
+    margin: 0;
+    padding: 8px 12px;
+    background-color: #f9f9f9;  
+    border-radius: 8px;  
+  }
+  
+  .result-title {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+  }
+  
+  .result-title img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+  
+  

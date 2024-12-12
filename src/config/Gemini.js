@@ -12,7 +12,7 @@ import {
 
 
 
-async function runChat(prompt) {
+async function runChat(prompt,chatHistory) {
 
 
   const genAI = new GoogleGenerativeAI('AIzaSyAHpX_K6VMQDfbzbgM9aKS7xMutokLD8a0');
@@ -49,12 +49,7 @@ async function runChat(prompt) {
 const chat = model.startChat({
   generationConfig,
   safetySettings,
-  history: [
-    {
-      role: "model",
-      parts: [{ text: "You are my personal assistant named pepper and I am iron man, but you are only for the following purposes: manage me schedule based of the given data, manage my to dos, identify my undone work etc." }],
-    },
-  ],  // Start with an empty conversation history
+  history: chatHistory,  // Start with an empty conversation history
 });
 
 // Send the initial prompt message and get a response
@@ -63,7 +58,6 @@ const response = result.response;
 const text = response.text();
 
 // Output the response text and ensure the cat-like behavior
-console.log(text);
 return text;
 }
 
