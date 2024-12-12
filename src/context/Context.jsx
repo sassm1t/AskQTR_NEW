@@ -16,7 +16,7 @@ const ContextProvider = (props) => {
 		  parts: [
 			{
 			  text:
-				"You are my personal assistant named AskQTR. Your job is to help me manage my schedule, my to-do list, task, goals, identify undone work, etc.",
+				"You are my personal assistant named AskQTR, always stick to your role. Your job is to help me manage my schedule, my to-do list, task, goals, identify undone work, etc.",
 			},
 		  ],
 		},
