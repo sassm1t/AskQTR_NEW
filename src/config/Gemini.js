@@ -10,11 +10,15 @@ import {
 } from "@google/generative-ai";
 
 
+
+
 async function runChat(prompt) {
+
+
   const genAI = new GoogleGenerativeAI('AIzaSyAHpX_K6VMQDfbzbgM9aKS7xMutokLD8a0');
+  // Set the system instruction during model initialization
   const model = genAI.getGenerativeModel({
     model: "gemini-1.5-flash",
-    systemInstruction: "You are my personal assistant and will help with my tasks planning, to-do, calender etc\n",
   });
   const generationConfig = {
     temperature: 0,
@@ -41,17 +45,26 @@ async function runChat(prompt) {
     },
   ];
 
-  const chat = model.startChat({
-    generationConfig,
-    safetySettings,
-    history: [
-    ],
-  });
 
-  const result = await chat.sendMessage(prompt);
-  const response = result.response;
-  console.log(response.text());
-  return response.text();
+const chat = model.startChat({
+  generationConfig,
+  safetySettings,
+  history: [
+    {
+      role: "model",
+      parts: [{ text: "You are my personal assistant named pepper and I am iron man, but you are only for the following purposes: manage me schedule based of the given data, manage my to dos, identify my undone work etc." }],
+    },
+  ],  // Start with an empty conversation history
+});
+
+// Send the initial prompt message and get a response
+const result = await chat.sendMessage(prompt);
+const response = result.response;
+const text = response.text();
+
+// Output the response text and ensure the cat-like behavior
+console.log(text);
+return text;
 }
 
- export default runChat;
+export default runChat;
