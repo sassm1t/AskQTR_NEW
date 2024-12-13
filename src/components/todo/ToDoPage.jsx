@@ -1,29 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { TextField } from "@mui/material";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "./todopage.css";
+import { Context } from "../../context/Context";
 
 const TodoPage = () => {
-  const [tasks, setTasks] = useState([]);
+  const { tasks, updateTasks } = useContext(Context);
   const [taskInput, setTaskInput] = useState("");
   const [dateInput, setDateInput] = useState("");
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
 
-  // Load tasks from localStorage when the component mounts
   useEffect(() => {
     const savedTasks = JSON.parse(localStorage.getItem("tasks"));
-    if (savedTasks) {
-      setTasks(savedTasks);
+    if (Array.isArray(savedTasks)) {
+      updateTasks(savedTasks);
+    } else {
+      updateTasks([]);
     }
   }, []);
 
-  // Save tasks to localStorage whenever they change
   useEffect(() => {
-    if (tasks.length > 0) {
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-    }
+    localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
   const addTask = () => {
@@ -38,7 +37,7 @@ const TodoPage = () => {
         date: dateInput,
         timeRange: `${startTime.format("h:mm A")} - ${endTime.format("h:mm A")}`,
       };
-      setTasks((prevTasks) => [...prevTasks, newTask]);
+      updateTasks([...tasks, newTask]);
       setTaskInput("");
       setDateInput("");
       setStartTime(null);
@@ -47,19 +46,19 @@ const TodoPage = () => {
   };
 
   const deleteTask = (index) => {
-    setTasks((prevTasks) => prevTasks.filter((_, i) => i !== index));
+    const updatedTasks = tasks.filter((_, i) => i !== index);
+    updateTasks(updatedTasks);
   };
 
   return (
     <div className="todo-page">
       <div className="logo-container">
-        <i className="fa fa-check-circle logo"></i> {/* FontAwesome Logo */}
+        <i className="fa fa-check-circle logo"></i>
       </div>
       <h1>Task List</h1>
       <div className="task-input">
         <input
           type="text"
-          id="task"
           placeholder="Add a new task"
           value={taskInput}
           onChange={(e) => setTaskInput(e.target.value)}
@@ -68,7 +67,6 @@ const TodoPage = () => {
       <div className="date-time-input">
         <input
           type="date"
-          id="date"
           value={dateInput}
           onChange={(e) => setDateInput(e.target.value)}
         />
@@ -99,7 +97,7 @@ const TodoPage = () => {
               <span className="task-time">{task.timeRange}</span>
             </div>
             <button onClick={() => deleteTask(index)} className="delete-btn">
-              <i className="fa fa-trash"></i> {/* FontAwesome Trash Icon */}
+              <i className="fa fa-trash"></i>
             </button>
           </li>
         ))}
