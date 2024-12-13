@@ -15,7 +15,7 @@ const ContextProvider = (props) => {
       role: "model",
       parts: [
         {
-          text: `You are my personal assistant named AskQTR, always stick to your role. Your job is to help me manage my schedule, my to-do list, task, goals, identify undone work, etc. todays date and time is ${new Date().toLocaleString()}`,
+          text: `You are my personal assistant named AskQTR, always stick to your role. Your job is to help me manage my schedule, my to-do list, task, goals, identify undone work, etc. today's date and time is ${new Date().toLocaleString()}.`,
         },
       ],
     },
@@ -26,14 +26,22 @@ const ContextProvider = (props) => {
       setResultData((prev) => prev + nextWord);
     }, 10 * index);
   };
+
   const newChat = () => {
     setLoading(false);
     setShowResults(false);
   };
+
   const [tasks, setTasks] = useState([]);
+  const [events, setEvents] = useState([]);  // Step 1: Add `events` state
 
   const updateTasks = (newTasks) => {
-    setTasks(newTasks);
+    setTasks(newTasks); // Update the tasks state when a new task/event is added
+  };
+
+  // Step 2: Create an update function for events
+  const updateEvents = (newEvents) => {
+    setEvents(newEvents);  // Update events state
   };
 
   const onSent = async () => {
@@ -54,21 +62,31 @@ const ContextProvider = (props) => {
             }.`
         )
         .join(" ");
-      const taskContextMessage = {
+      const eventSummary = events
+        .map(
+          (event, index) =>
+            `Event ${index + 1}: ${event.title} on ${new Date(event.date).toLocaleDateString()} from ${event.startTime.format("h:mm A")} to ${event.endTime.format("h:mm A")}.`
+        )
+        .join(" ");
+      
+      // Include both tasks and events in the context message
+      const contextMessage = {
         role: "user",
         parts: [
           {
-            text: `Here are my tasks: ${taskSummary}`,
+            text: `Here are my tasks: ${taskSummary} Here are my events: ${eventSummary}`,
           },
         ],
       };
+	  console.log(contextMessage);
+
       const newMessage = {
         role: "user",
         parts: [{ text: input }],
       };
 
       // Update the chat history with the new user message
-      const newChatHistory = [...chatHistory,taskContextMessage, newMessage];
+      const newChatHistory = [...chatHistory, contextMessage, newMessage];
 
       // Send the updated chat history to Gemini
       response = await runChat(input, newChatHistory);
@@ -84,7 +102,7 @@ const ContextProvider = (props) => {
 
       setChatHistory((prevHistory) => [
         ...prevHistory,
-		taskContextMessage,
+        contextMessage,
         newMessage,
         modelResponse,
       ]);
@@ -96,6 +114,7 @@ const ContextProvider = (props) => {
     }
   };
 
+  // Step 3: Add `events` and `updateEvents` to the context value
   const contextValue = {
     prevPrompts,
     setPrevPrompts,
@@ -109,8 +128,10 @@ const ContextProvider = (props) => {
     resultData,
     newChat,
     chatHistory,
-    tasks, // Add tasks to context
-    updateTasks, // Add updater function
+    tasks, // Include tasks in context
+    updateTasks, // Include updateTasks function
+    events, // Include events in context
+    updateEvents, // Include updateEvents function
   };
 
   return (

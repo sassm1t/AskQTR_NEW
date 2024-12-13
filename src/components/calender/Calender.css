@@ -1,0 +1,134 @@
+/* CalendarPage.css */
+.calendar-page {
+  font-family: 'Roboto', sans-serif;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  font-size: 30px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.calendar-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.calendar {
+  width: 50%;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.event-input-container {
+  width: 40%;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.event-title-input, .event-details-input {
+  margin-bottom: 20px;
+}
+
+.time-picker-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.add-event-btn {
+  width: 100%;
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-bottom: 10px;
+}
+
+.add-event-btn:hover {
+  background-color: #0056b3;
+}
+
+.clear-btn {
+  width: 100%;
+  background-color: #f44336;
+  color: white;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.clear-btn:hover {
+  background-color: #e53935;
+}
+
+.events-list {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.events-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.event-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 12px;
+  background-color: #f9f9f9;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.event-title {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+.event-details {
+  font-size: 14px;
+  color: #555;
+  margin: 5px 0;
+}
+
+.event-time {
+  font-size: 14px;
+  color: #777;
+}
+
+.back-to-home-btn {
+  width: 100%;
+  margin-top: 20px;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.back-to-home-btn:hover {
+  background-color: #f1f1f1;
+}

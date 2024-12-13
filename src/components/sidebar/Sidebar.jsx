@@ -14,6 +14,7 @@ const Sidebar = () => {
     setRecentPrompt(prompt);
     await onSent(prompt);
   };
+
   return (
     <div className="sidebar">
       <div className="top">
@@ -27,10 +28,10 @@ const Sidebar = () => {
         />
         <div className="new-tab">
           <i
-            class="fa fa-plus"
+            className="fa fa-plus"
             aria-hidden="true"
             onClick={() => {
-				navigate("/");
+              navigate("/");
             }}
           ></i>
 
@@ -47,6 +48,7 @@ const Sidebar = () => {
                     loadPreviousPrompt(item);
                   }}
                   className="recent-entry"
+                  key={index}
                 >
                   <img src={assets.message_icon} alt="" />
                   <p>{item.slice(0, 18)}...</p>
@@ -58,13 +60,25 @@ const Sidebar = () => {
 
         <div className="new-tab">
           <i
-            class="fa fa-check-square-o"
+            className="fa fa-check-square-o"
             aria-hidden="true"
             onClick={() => {
               navigate("/todo"); // Navigate to the To-Do page
             }}
           ></i>
           {extended ? <p>To-Do</p> : null}
+        </div>
+
+        {/* New Calendar Button */}
+        <div className="new-tab">
+          <i
+            className="fa fa-calendar"
+            aria-hidden="true"
+            onClick={() => {
+              navigate("/calendar"); // Navigate to the Calendar page
+            }}
+          ></i>
+          {extended ? <p>Calendar</p> : null}
         </div>
       </div>
       <div className="bottom">
