@@ -15,7 +15,7 @@ const ContextProvider = (props) => {
       role: "model",
       parts: [
         {
-          text: "You are my personal assistant named AskQTR, always stick to your role. Your job is to help me manage my schedule, my to-do list, task, goals, identify undone work, etc.",
+          text: `You are my personal assistant named AskQTR, always stick to your role. Your job is to help me manage my schedule, my to-do list, task, goals, identify undone work, etc. todays date and time is ${new Date().toLocaleString()}`,
         },
       ],
     },
