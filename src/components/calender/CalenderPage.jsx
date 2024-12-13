@@ -1,32 +1,51 @@
 import React, { useState, useEffect, useContext } from "react";
-import { TextField, Button } from "@mui/material";
-import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import { 
+  Button, 
+  Typography, 
+  Grid, 
+  Paper, 
+  List, 
+  ListItem, 
+  ListItemText, 
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+} from "@mui/material";
+import { 
+  LocalizationProvider, 
+  DateCalendar,
+  TimePicker 
+} from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import Calendar from "react-calendar";
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import dayjs from "dayjs";
 import { Context } from "../../context/Context";
-import dayjs from "dayjs"; // Ensure you have this imported
-import "./Calender.css";
 
 const CalendarPage = () => {
   const { events, updateEvents } = useContext(Context);
-  const [date, setDate] = useState(new Date());
-  const [eventTitle, setEventTitle] = useState("");
-  const [eventDetails, setEventDetails] = useState("");
-  const [startTime, setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(dayjs());
+  const [openAddEventModal, setOpenAddEventModal] = useState(false);
+  const [newEvent, setNewEvent] = useState({
+    title: "",
+    details: "",
+    startTime: null,
+    endTime: null
+  });
 
   // Load events from localStorage on initial render
   useEffect(() => {
     const savedEvents = JSON.parse(localStorage.getItem("events"));
     if (Array.isArray(savedEvents)) {
-      // Convert saved event date strings back into Date objects
       const loadedEvents = savedEvents.map((event) => ({
         ...event,
-        date: new Date(event.date), // Ensure the date is a Date object
+        date: dayjs(event.date),
         startTime: event.startTime ? dayjs(event.startTime) : null,
         endTime: event.endTime ? dayjs(event.endTime) : null,
       }));
-      updateEvents(loadedEvents); // Set the events state to loaded events
+      updateEvents(loadedEvents);
     } else {
       updateEvents([]);
     }
@@ -37,27 +56,29 @@ const CalendarPage = () => {
     localStorage.setItem("events", JSON.stringify(events));
   }, [events]);
 
-  // Handle Calendar Date Change
-  const handleDateChange = (newDate) => {
-    setDate(newDate);
-  };
-
   // Add Event
   const handleAddEvent = () => {
-    if (eventTitle.trim() && eventDetails.trim() && startTime && endTime) {
-      const newEvent = {
-        date,
-        title: eventTitle,
-        details: eventDetails,
-        startTime,
-        endTime,
+    if (
+      newEvent.title.trim() && 
+      newEvent.details.trim() && 
+      newEvent.startTime && 
+      newEvent.endTime
+    ) {
+      const eventToAdd = {
+        date: selectedDate,
+        ...newEvent
       };
-      updateEvents([...events, newEvent]);
-      // Reset form
-      setEventTitle("");
-      setEventDetails("");
-      setStartTime(null);
-      setEndTime(null);
+      
+      updateEvents([...events, eventToAdd]);
+      
+      // Reset form and close modal
+      setNewEvent({
+        title: "",
+        details: "",
+        startTime: null,
+        endTime: null
+      });
+      setOpenAddEventModal(false);
     }
   };
 
@@ -69,80 +90,143 @@ const CalendarPage = () => {
 
   // Filter events for the selected day
   const filteredEvents = events.filter(
-    (event) => event.date.toDateString() === date.toDateString()
+    (event) => event.date.format('YYYY-MM-DD') === selectedDate.format('YYYY-MM-DD')
   );
 
   return (
-    <div className="calendar-page">
-      <h1>Schedule Your Meeting</h1>
-      <div className="calendar-container">
-        <Calendar onChange={handleDateChange} value={date} className="calendar" />
-        <div className="event-input-container">
-          <h3>Add New Event</h3>
-          <TextField
-            label="Event Title"
-            variant="outlined"
-            fullWidth
-            value={eventTitle}
-            onChange={(e) => setEventTitle(e.target.value)}
-            className="event-title-input"
-          />
-          <TextField
-            label="Event Details"
-            variant="outlined"
-            fullWidth
-            multiline
-            rows={4}
-            value={eventDetails}
-            onChange={(e) => setEventDetails(e.target.value)}
-            className="event-details-input"
-          />
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <div className="time-picker-container">
-              <TimePicker
-                label="Start Time"
-                value={startTime}
-                onChange={setStartTime}
-                renderInput={(props) => <TextField {...props} />}
-              />
-              <TimePicker
-                label="End Time"
-                value={endTime}
-                onChange={setEndTime}
-                renderInput={(props) => <TextField {...props} />}
-              />
-            </div>
-          </LocalizationProvider>
-          <Button onClick={handleAddEvent} variant="contained" className="add-event-btn">
-            Add Event
-          </Button>
-        </div>
-      </div>
-      <div className="events-list">
-        <h3>Events on {date.toDateString()}</h3>
-        {filteredEvents.length > 0 ? (
-          <ul>
-            {filteredEvents.map((event, index) => (
-              <li key={index} className="event-item">
-                <span className="event-title">{event.title}</span>
-                <span className="event-details">{event.details}</span>
-                <span className="event-time">
-                  {event.startTime.format("h:mm A")} - {event.endTime.format("h:mm A")}
-                </span>
-                <button onClick={() => deleteEvent(index)} className="delete-btn">
-                  <i className="fa fa-trash"></i> Delete
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No events scheduled for this day.</p>
-        )}
-      </div>
-      <Button variant="outlined" className="back-to-home-btn">
-        Back to Home
-      </Button>
-    </div>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Grid container spacing={3} sx={{ padding: 3 }}>
+        <Grid item xs={12} md={4}>
+          <Paper elevation={3} sx={{ padding: 2 }}>
+            <DateCalendar 
+              value={selectedDate}
+              onChange={(newValue) => setSelectedDate(newValue)}
+            />
+          </Paper>
+        </Grid>
+        
+        <Grid item xs={12} md={8}>
+          <Paper elevation={3} sx={{ padding: 2 }}>
+            <Grid container alignItems="center" justifyContent="space-between">
+              <Grid item>
+                <Typography variant="h5">
+                  Events on {selectedDate.format('dddd, MMMM D, YYYY')}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  startIcon={<AddCircleOutlineIcon />}
+                  onClick={() => setOpenAddEventModal(true)}
+                >
+                  Add Event
+                </Button>
+              </Grid>
+            </Grid>
+
+            {filteredEvents.length > 0 ? (
+              <List>
+                {filteredEvents.map((event, index) => (
+                  <ListItem 
+                    key={index} 
+                    secondaryAction={
+                      <IconButton 
+                        edge="end" 
+                        onClick={() => deleteEvent(index)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    }
+                  >
+                    <ListItemText
+                      primary={event.title}
+                      secondary={`${event.startTime.format('h:mm A')} - ${event.endTime.format('h:mm A')}`}
+                    />
+                    <Typography variant="body2" color="textSecondary" sx={{ ml: 2 }}>
+                      {event.details}
+                    </Typography>
+                  </ListItem>
+                ))}
+              </List>
+            ) : (
+              <Typography variant="body1" sx={{ mt: 2, textAlign: 'center' }}>
+                No events scheduled for this day.
+              </Typography>
+            )}
+          </Paper>
+        </Grid>
+
+        {/* Add Event Modal */}
+        <Dialog 
+          open={openAddEventModal} 
+          onClose={() => setOpenAddEventModal(false)}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle>Add New Event</DialogTitle>
+          <DialogContent>
+            <Grid container spacing={2} sx={{ mt: 1 }}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Event Title"
+                  value={newEvent.title}
+                  onChange={(e) => setNewEvent(prev => ({
+                    ...prev, 
+                    title: e.target.value
+                  }))}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Event Details"
+                  multiline
+                  rows={3}
+                  value={newEvent.details}
+                  onChange={(e) => setNewEvent(prev => ({
+                    ...prev, 
+                    details: e.target.value
+                  }))}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TimePicker
+                  label="Start Time"
+                  value={newEvent.startTime}
+                  onChange={(value) => setNewEvent(prev => ({
+                    ...prev, 
+                    startTime: value
+                  }))}
+                  renderInput={(props) => <TextField fullWidth {...props} />}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TimePicker
+                  label="End Time"
+                  value={newEvent.endTime}
+                  onChange={(value) => setNewEvent(prev => ({
+                    ...prev, 
+                    endTime: value
+                  }))}
+                  renderInput={(props) => <TextField fullWidth {...props} />}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button 
+                  fullWidth 
+                  variant="contained" 
+                  onClick={handleAddEvent}
+                >
+                  Create Event
+                </Button>
+              </Grid>
+            </Grid>
+          </DialogContent>
+        </Dialog>
+      </Grid>
+    </LocalizationProvider>
   );
 };
 
