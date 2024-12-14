@@ -74,7 +74,7 @@ const Main = () => {
 								<p>{item.prompt}</p>
 							</div>
 							<div className="result-data">
-								<img src={assets.gemini_icon} alt="" />
+								<img src={assets.qtr_icon} alt="" />
 								<p dangerouslySetInnerHTML={{ __html: item.result }}></p>
 							</div>
 						</div>
@@ -88,7 +88,7 @@ const Main = () => {
 								<p>{recentPrompt}</p>
 							</div>
 							<div className="result-data">
-								<img src={assets.gemini_icon} alt="" />
+								<img src={assets.qtr_icon} alt="" />
 								{loading ? (
 									<div className="loader">
 										<hr />
@@ -124,20 +124,20 @@ const Main = () => {
 									className="card"
 									onClick={() =>
 										handleCardClick(
-											"Help me plan my work"
+											"What should I prioritize for the next week?"
 										)
 									}
 								>
-									<p>Help me plan my work</p>
+									<p>What should I prioritize for the next week?</p>
 									<img src={assets.message_icon} alt="" />
 								</div>
 								<div
 									className="card"
 									onClick={() =>
-										handleCardClick("What meetings do I have today?")
+										handleCardClick("When can I schedule my vacation?")
 									}
 								>
-									<p>What meetings do I have today?</p>
+									<p>When can I schedule my vacation?</p>
 									<img src={assets.bulb_icon} alt="" />
 								</div>
 								<div
