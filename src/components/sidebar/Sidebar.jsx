@@ -2,8 +2,16 @@ import "./sidebar.css";
 import { assets } from "../../assets/assets";
 import { useContext, useState } from "react";
 import { Context } from "../../context/Context";
-import "font-awesome/css/font-awesome.min.css";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import {
+  QuestionCircleOutlined,
+  HistoryOutlined,
+  SettingOutlined,
+  MenuOutlined,
+  PlusOutlined,
+  CheckCircleOutlined,
+  CalendarOutlined,
+} from "@ant-design/icons";
 
 const Sidebar = () => {
   const [extended, setExtended] = useState(false);
@@ -18,24 +26,22 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <div className="top">
-        <img
-          src={assets.menu_icon}
+        <MenuOutlined
           className="menu"
-          alt="menu-icon"
+          style={{ fontSize: "30px", color: "black" }}
           onClick={() => {
             setExtended((prev) => !prev);
           }}
         />
+
         <div className="new-tab">
-          <i
-            className="fa fa-plus"
-            aria-hidden="true"
+          <PlusOutlined
             onClick={() => {
               navigate("/");
             }}
-          ></i>
+          />
 
-          {extended ? <p>New Chat</p> : null}
+          {extended ? <p className="para">New Chat</p> : null}
         </div>
 
         {extended ? (
@@ -59,39 +65,36 @@ const Sidebar = () => {
         ) : null}
 
         <div className="new-tab">
-          <i
-            className="fa fa-check-square-o"
-            aria-hidden="true"
+          <CheckCircleOutlined
             onClick={() => {
               navigate("/todo"); // Navigate to the To-Do page
             }}
-          ></i>
-          {extended ? <p>To-Do</p> : null}
+          />
+          {extended ? <p className="para">To-Do</p> : null}
         </div>
 
         {/* New Calendar Button */}
         <div className="new-tab">
-          <i
-            className="fa fa-calendar"
-            aria-hidden="true"
-            onClick={() => {
+        
+          <CalendarOutlined onClick={() => {
               navigate("/calendar"); // Navigate to the Calendar page
-            }}
-          ></i>
-          {extended ? <p>Calendar</p> : null}
+            }} />
+          {extended ? <p className="para">Calendar</p> : null}
         </div>
       </div>
       <div className="bottom">
         <div className="bottom-item recent-entry">
-          <img src={assets.question_icon} alt="" />
+          <QuestionCircleOutlined
+            style={{ fontSize: "25px", color: "grey" }}
+          />
           {extended ? <p>Help desk</p> : null}
         </div>
         <div className="bottom-item recent-entry">
-          <img src={assets.history_icon} alt="" />
+          <HistoryOutlined style={{ fontSize: "25px", color: "grey" }} />
           {extended ? <p>History</p> : null}
         </div>
         <div className="bottom-item recent-entry">
-          <img src={assets.setting_icon} alt="" />
+          <SettingOutlined style={{ fontSize: "25px", color: "grey" }} />
           {extended ? <p>Settings</p> : null}
         </div>
       </div>

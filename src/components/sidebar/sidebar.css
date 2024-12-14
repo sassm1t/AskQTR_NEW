@@ -15,12 +15,15 @@
 }
 .sidebar img {
 	width: 30px;
+
+    
 }
 .sidebar .menu {
 	display: block;
-	margin-left: 10px;
 	cursor: pointer;
+    margin-bottom: 20px;
 }
+
 .sidebar .new-chat{
  margin-top: 50px;
  display: inline-flex;
@@ -67,17 +70,20 @@
 }
 
 .sidebar .new-tab{
-    margin-top: 20px;
+    margin-top: 10px;
     display: inline-flex;
     align-items: center;
     gap: 10px;
     padding: 16px;
     background-color: #e6eaf1;
     border-radius: 50px;
-    font-size: 28px;
-    color: grey;
+    font-size: 25px;
+    color: black;
     cursor: pointer;
 
+}
+.sidebar .para{
+    font-size: medium;
 }
 
 @media (max-width:600px){

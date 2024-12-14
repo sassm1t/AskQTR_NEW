@@ -4,6 +4,8 @@ import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "./todopage.css";
 import { Context } from "../../context/Context";
+import {CheckCircleOutlined,} from "@ant-design/icons";
+
 
 const TodoPage = () => {
   const { tasks, updateTasks } = useContext(Context);
@@ -53,7 +55,7 @@ const TodoPage = () => {
   return (
     <div className="todo-page">
       <div className="logo-container">
-        <i className="fa fa-check-circle logo"></i>
+      <CheckCircleOutlined style={{ fontSize: "35px", color: "#7F8AC7" }}/>
       </div>
       <h1>Task List</h1>
       <div className="task-input">
