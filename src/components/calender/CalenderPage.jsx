@@ -23,6 +23,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import dayjs from "dayjs";
 import { Context } from "../../context/Context";
+import "./Calender.css";
+
 
 const CalendarPage = () => {
   const { events, updateEvents } = useContext(Context);
@@ -95,12 +97,21 @@ const CalendarPage = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Grid container spacing={3} sx={{ padding: 3 }}>
+      <Grid container spacing={3} sx={{ padding: 3, marginLeft: 15, marginRight: 15, marginTop: 2}}>
         <Grid item xs={12} md={4}>
           <Paper elevation={3} sx={{ padding: 2 }}>
             <DateCalendar 
               value={selectedDate}
               onChange={(newValue) => setSelectedDate(newValue)}
+              sx={{
+                '& .MuiPickersDay-root.Mui-selected': {
+                  backgroundColor: '#7F8AC7', // Change the selected date color
+                  color: 'white', // Ensure text is readable
+                  '&:hover': {
+                    backgroundColor: '#6A75A6' // Slightly darker on hover
+                  }
+                }
+              }}
             />
           </Paper>
         </Grid>
@@ -116,9 +127,19 @@ const CalendarPage = () => {
               <Grid item>
                 <Button 
                   variant="contained" 
-                  color="primary" 
+                  color="#7F8AC7"
                   startIcon={<AddCircleOutlineIcon />}
                   onClick={() => setOpenAddEventModal(true)}
+                  sx={{
+                    bgcolor: '#7F8AC7',
+                    color: 'white',
+                    '&:hover': {
+                      bgcolor: '#6A75A6'
+                    }
+                    
+                  
+                    
+                  }}
                 >
                   Add Event
                 </Button>
@@ -143,7 +164,7 @@ const CalendarPage = () => {
                       primary={event.title}
                       secondary={`${event.startTime.format('h:mm A')} - ${event.endTime.format('h:mm A')}`}
                     />
-                    <Typography variant="body2" color="textSecondary" sx={{ ml: 2 }}>
+                    <Typography variant="body2" color="#7F8AC7" sx={{ ml: 2 }}>
                       {event.details}
                     </Typography>
                   </ListItem>
@@ -218,6 +239,17 @@ const CalendarPage = () => {
                   fullWidth 
                   variant="contained" 
                   onClick={handleAddEvent}
+                  sx={{
+                    bgcolor: '#7F8AC7',
+                    color: 'white',
+                    '&:hover': {
+                      bgcolor: '#6A75A6'
+                    }
+                    
+                  
+                    
+                  }}
+                  
                 >
                   Create Event
                 </Button>
