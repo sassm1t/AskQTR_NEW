@@ -4,8 +4,8 @@ import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "./todopage.css";
 import { Context } from "../../context/Context";
-import {CheckCircleOutlined,} from "@ant-design/icons";
 
+import { CheckCircleOutlined, DeleteOutlined } from "@ant-design/icons";
 
 const TodoPage = () => {
   const { tasks, updateTasks } = useContext(Context);
@@ -37,7 +37,9 @@ const TodoPage = () => {
       const newTask = {
         task: taskInput,
         date: dateInput,
-        timeRange: `${startTime.format("h:mm A")} - ${endTime.format("h:mm A")}`,
+        timeRange: `${startTime.format("h:mm A")} - ${endTime.format(
+          "h:mm A"
+        )}`,
       };
       updateTasks([...tasks, newTask]);
       setTaskInput("");
@@ -55,7 +57,7 @@ const TodoPage = () => {
   return (
     <div className="todo-page">
       <div className="logo-container">
-      <CheckCircleOutlined style={{ fontSize: "35px", color: "#7F8AC7" }}/>
+        <CheckCircleOutlined style={{ fontSize: "35px", color: "#7F8AC7" }} />
       </div>
       <h1>Task List</h1>
       <div className="task-input">
@@ -89,7 +91,9 @@ const TodoPage = () => {
           </div>
         </LocalizationProvider>
       </div>
-      <button onClick={addTask} className="add-task-btn">Add Task</button>
+      <button onClick={addTask} className="add-task-btn">
+        Add Task
+      </button>
       <ul className="task-list">
         {tasks.map((task, index) => (
           <li key={index}>
@@ -99,7 +103,7 @@ const TodoPage = () => {
               <span className="task-time">{task.timeRange}</span>
             </div>
             <button onClick={() => deleteTask(index)} className="delete-btn">
-              <i className="fa fa-trash"></i>
+              <DeleteOutlined />
             </button>
           </li>
         ))}
