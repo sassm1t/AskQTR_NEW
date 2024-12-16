@@ -114,10 +114,10 @@ const Main = () => {
 								<div
 									className="card"
 									onClick={() =>
-										handleCardClick("What task do I have on my schedule today?")
+										handleCardClick("What are the working dates in December around the weekend to plan a long holiday?")
 									}
 								>
-									<p>What task do I have on my schedule today?</p>
+									<p>What are the working dates in December around the weekend to plan a long holiday?</p>
 									<img src={assets.compass_icon} alt="" />
 								</div>
 								<div
@@ -134,10 +134,10 @@ const Main = () => {
 								<div
 									className="card"
 									onClick={() =>
-										handleCardClick("When can I schedule my vacation?")
+										handleCardClick("When is the earliest slot to schedule a team meeting next week?")
 									}
 								>
-									<p>When can I schedule my vacation?</p>
+									<p>When is the earliest slot to schedule a team meeting next week?</p>
 									<img src={assets.bulb_icon} alt="" />
 								</div>
 								<div
