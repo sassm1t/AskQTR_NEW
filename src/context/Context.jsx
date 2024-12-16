@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 import runChat from "../config/Gemini";
+import runLlamaChat from "../config/ollama";
 
 export const Context = createContext();
 
@@ -7,6 +8,7 @@ const ContextProvider = (props) => {
   const [input, setInput] = useState("");
   const [recentPrompt, setRecentPrompt] = useState("");
   const [prevPrompts, setPrevPrompts] = useState([]);
+
   const [showResults, setShowResults] = useState(false);
   const [loading, setLoading] = useState(false);
   const [resultData, setResultData] = useState("");
@@ -78,7 +80,6 @@ const ContextProvider = (props) => {
           },
         ],
       };
-	  console.log(contextMessage);
 
       const newMessage = {
         role: "user",
@@ -88,13 +89,22 @@ const ContextProvider = (props) => {
       // Update the chat history with the new user message
       const newChatHistory = [...chatHistory, contextMessage, newMessage];
 
-      // Send the updated chat history to Gemini
-      response = await runChat(input, newChatHistory);
+      // Transform `newChatHistory` to a format Llama expects
+      const llamaMessages = newChatHistory.flatMap((message) =>
+        message.parts.map((part) => ({
+          role: message.role, // "user" or "model"
+          content: part.text, // The actual message content
+        }))
+      );
+
+      // Send the updated chat history to Llama
+      response = await runLlamaChat(llamaMessages);
+      console.log(response);
 
       // Update the result with the new response
       setResultData(response);
 
-      // Add the response from Gemini to the history
+      // Add the response from Llama to the history
       const modelResponse = {
         role: "model",
         parts: [{ text: response }],
