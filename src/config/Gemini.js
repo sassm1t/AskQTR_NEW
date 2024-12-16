@@ -54,7 +54,6 @@ const response = result.response;
 
 
 const text = response.text();
-
 // Output the response text and ensure the cat-like behavior
 return text;
 }
