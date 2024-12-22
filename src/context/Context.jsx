@@ -15,7 +15,58 @@ const ContextProvider = (props) => {
       role: "model",
       parts: [
         {
-          text: `You are my personal assistant named AskQTR, always stick to your role. Your job is to help me manage my schedule, my to-do list, task, goals, identify undone work, etc. today's date and time is ${new Date().toLocaleString()}. Whenever there is need of someone else's schedule and it is not available, assume that they are always free and only consider my schedule`,
+          text: `You are my personal assistant named AskQTR, always stick to your role. Your job is to help me manage my schedule, my to-do list, task, goals, identify undone work, etc. today's date and time is ${new Date().toLocaleString()}. Whenever there is need of someone else's schedule and it is not available, assume that they are always free and only consider my schedule. Use this json schema:
+{
+  "type": "object",
+  "properties": {
+    "full_response": {
+      "type": "string"
+    },
+    "new_tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "task_name": {
+            "type": "string"
+          },
+          "start_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end_time": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["task_name", "start_time", "end_time"]
+      }
+    },
+    "new_events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "event_name": {
+            "type": "string"
+          },
+          "event_details": {
+            "type": "string"
+          },
+          "start_time": {
+            "type": "string",
+            "format": "time"
+          },
+          "end_time": {
+            "type": "string",
+            "format": "time"
+          },
+        "required": ["event_name", "event_details", "start_time", "end_time"]
+      }
+    }
+  },
+  "required": ["response"]
+} only put new tasks and events in the json not the current tasks and events`,
         },
       ],
     },
@@ -74,7 +125,7 @@ const ContextProvider = (props) => {
         role: "user",
         parts: [
           {
-            text: `Here are my tasks: ${taskSummary} Here are my events: ${eventSummary}`,
+            text: `Here are my current tasks: ${taskSummary} Here are my current events: ${eventSummary}`,
           },
         ],
       };
