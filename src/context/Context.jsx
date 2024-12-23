@@ -65,7 +65,7 @@ const ContextProvider = (props) => {
       }
     }
   },
-  "required": ["response"]
+  "required": ["full_response","new_tasks","new_events"]
 } only put new tasks and events in the json not the current tasks and events`,
         },
       ],
@@ -141,9 +141,10 @@ const ContextProvider = (props) => {
 
       // Send the updated chat history to Gemini
       response = await runChat(input, newChatHistory);
-
+      const correctResponse = response.slice(7,-4);
+      const jsonify = JSON.parse(correctResponse);
       // Update the result with the new response
-      setResultData(response);
+      setResultData(jsonify.full_response);
 
       // Add the response from Gemini to the history
       const modelResponse = {
