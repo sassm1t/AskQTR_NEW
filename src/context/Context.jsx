@@ -1,5 +1,6 @@
-import { createContext, useState } from "react";
+import { createContext, useState,useEffect } from "react";
 import runChat from "../config/Gemini";
+import dayjs from "dayjs";
 
 export const Context = createContext();
 
@@ -10,6 +11,24 @@ const ContextProvider = (props) => {
   const [showResults, setShowResults] = useState(false);
   const [loading, setLoading] = useState(false);
   const [resultData, setResultData] = useState("");
+  const [tasks, setTasks] = useState(() => {
+    // Initialize tasks from localStorage
+    const savedTasks = localStorage.getItem("tasks");
+    return savedTasks ? JSON.parse(savedTasks) : [];
+  });
+  const [events, setEvents] = useState(() => {
+    const savedEvents = localStorage.getItem("events");
+    if (savedEvents) {
+      const parsedEvents = JSON.parse(savedEvents);
+      return parsedEvents.map(event => ({
+        ...event,
+        date: dayjs(event.date),
+        startTime: event.startTime ? dayjs(event.startTime) : null,
+        endTime: event.endTime ? dayjs(event.endTime) : null,
+      }));
+    }
+    return [];
+  });
   const [chatHistory, setChatHistory] = useState([
     {
       role: "model",
@@ -72,6 +91,14 @@ const ContextProvider = (props) => {
     },
   ]);
 
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
+
+  useEffect(() => {
+    localStorage.setItem("events", JSON.stringify(events));
+  }, [events]);
+
   const delayPara = (index, nextWord) => {
     setTimeout(function () {
       setResultData((prev) => prev + nextWord);
@@ -83,8 +110,6 @@ const ContextProvider = (props) => {
     setShowResults(false);
   };
 
-  const [tasks, setTasks] = useState([]);
-  const [events, setEvents] = useState([]);  // Step 1: Add `events` state
 
   const updateTasks = (newTasks) => {
     setTasks(newTasks); // Update the tasks state when a new task/event is added
@@ -93,6 +118,36 @@ const ContextProvider = (props) => {
   // Step 2: Create an update function for events
   const updateEvents = (newEvents) => {
     setEvents(newEvents);  // Update events state
+  };
+
+  const processNewTasksAndEvents = (jsonResponse) => {
+    try {
+      // Process new tasks
+      if (jsonResponse.new_tasks && jsonResponse.new_tasks.length > 0) {
+        const newTasksToAdd = jsonResponse.new_tasks.map(task => ({
+          task: task.task_name,
+          date: dayjs(task.start_time).format('YYYY-MM-DD'),
+          timeRange: `${dayjs(task.start_time).format('h:mm A')} - ${dayjs(task.end_time).format('h:mm A')}`
+        }));
+
+        updateTasks([...tasks, ...newTasksToAdd]);
+      }
+
+      // Process new events
+      if (jsonResponse.new_events && jsonResponse.new_events.length > 0) {
+        const newEventsToAdd = jsonResponse.new_events.map(event => ({
+          title: event.event_name,
+          details: event.event_details,
+          date: dayjs(dayjs().format('YYYY-MM-DD')), // Using current date since date isn't in the event format
+          startTime: dayjs(dayjs().format('YYYY-MM-DD') + ' ' + event.start_time),
+          endTime: dayjs(dayjs().format('YYYY-MM-DD') + ' ' + event.end_time)
+        }));
+
+        updateEvents([...events, ...newEventsToAdd]);
+      }
+    } catch (error) {
+      console.error("Error processing new tasks and events:", error);
+    }
   };
 
   const onSent = async () => {
@@ -145,6 +200,8 @@ const ContextProvider = (props) => {
       const jsonify = JSON.parse(correctResponse);
       // Update the result with the new response
       setResultData(jsonify.full_response);
+
+      processNewTasksAndEvents(jsonify);
 
       // Add the response from Gemini to the history
       const modelResponse = {
