@@ -184,7 +184,7 @@ const ContextProvider = (props) => {
     }
   },
   "required": ["full_response","new_tasks","new_events","delete_tasks","delete_events","update_tasks","update_events"]
-} only put new tasks and events in the json not the current tasks and events. once new tasks and events are added, there is no need to hold them in the list`,
+} only put new tasks and events in the json not the current tasks and events. once new tasks and events are added, there is no need to hold them in the list. Please note that you have to always give the json in response nothing else`,
         },
       ],
     },
@@ -368,7 +368,7 @@ const ContextProvider = (props) => {
       response = await runChat(input, newChatHistory);
       const correctResponse = response.substring(
         response.indexOf('{'), 
-        response.lastIndexOf('}') + 1
+        response.lastIndexOf('}')+1
       );
       console.log(correctResponse);
       const jsonify = JSON.parse(correctResponse);
