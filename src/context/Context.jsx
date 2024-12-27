@@ -80,12 +80,111 @@ const ContextProvider = (props) => {
             "type": "string",
             "format": "time"
           },
-        "required": ["event_name", "event_details", "start_time", "end_time"]
+          "date": {
+            "type": "string",
+            "format": "time"
+          },
+        "required": ["event_name", "event_details", "start_time", "end_time","date"]
       }
     }
   },
-  "required": ["full_response","new_tasks","new_events"]
-} only put new tasks and events in the json not the current tasks and events`,
+  "delete_tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "task_name": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": ["task_name", "date"]
+      }
+    },
+    "delete_events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "event_name": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": ["event_name", "date"]
+      }
+    }
+  },
+  "update_tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "original_task_name": {
+            "type": "string"
+          },
+          "original_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "new_task_name": {
+            "type": "string"
+          },
+          "new_start_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "new_end_time": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["original_task_name", "original_date"]
+      }
+    },
+    "update_events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "original_event_name": {
+            "type": "string"
+          },
+          "original_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "new_event_name": {
+            "type": "string"
+          },
+          "new_event_details": {
+            "type": "string"
+          },
+          "new_start_time": {
+            "type": "string",
+            "format": "time"
+          },
+          "new_end_time": {
+            "type": "string",
+            "format": "time"
+          },
+          "new_date": {
+            "type": "string",
+            "format": "time"
+          }
+        },
+        "required": ["original_event_name", "original_date"]
+      }
+    }
+  },
+  "required": ["full_response","new_tasks","new_events","delete_tasks","delete_events","update_tasks","update_events"]
+} only put new tasks and events in the json not the current tasks and events. once new tasks and events are added, there is no need to hold them in the list`,
         },
       ],
     },
@@ -138,12 +237,83 @@ const ContextProvider = (props) => {
         const newEventsToAdd = jsonResponse.new_events.map(event => ({
           title: event.event_name,
           details: event.event_details,
-          date: dayjs(dayjs().format('YYYY-MM-DD')), // Using current date since date isn't in the event format
+          date: dayjs(event.date),
           startTime: dayjs(dayjs().format('YYYY-MM-DD') + ' ' + event.start_time),
           endTime: dayjs(dayjs().format('YYYY-MM-DD') + ' ' + event.end_time)
         }));
 
         updateEvents([...events, ...newEventsToAdd]);
+      }
+      if (jsonResponse.delete_tasks && jsonResponse.delete_tasks.length > 0) {
+        const updatedTasks = tasks.filter(task => {
+          return !jsonResponse.delete_tasks.some(
+            deleteTask => 
+              deleteTask.task_name.toLowerCase() === task.task.toLowerCase() &&
+              dayjs(deleteTask.date).format('YYYY-MM-DD') === task.date
+          );
+        });
+        updateTasks(updatedTasks);
+      }
+
+      // Process event deletions
+      if (jsonResponse.delete_events && jsonResponse.delete_events.length > 0) {
+        const updatedEvents = events.filter(event => {
+          return !jsonResponse.delete_events.some(
+            deleteEvent => 
+              deleteEvent.event_name.toLowerCase() === event.title.toLowerCase() &&
+              dayjs(deleteEvent.date).format('YYYY-MM-DD') === event.date.format('YYYY-MM-DD')
+          );
+        });
+        updateEvents(updatedEvents);
+      }
+
+      if (jsonResponse.update_tasks && jsonResponse.update_tasks.length > 0) {
+        const updatedTasks = tasks.map(task => {
+          const updateTask = jsonResponse.update_tasks.find(
+            update => 
+              update.original_task_name.toLowerCase() === task.task.toLowerCase() &&
+              dayjs(update.original_date).format('YYYY-MM-DD') === task.date
+          );
+
+          if (updateTask) {
+            return {
+              task: updateTask.new_task_name || task.task,
+              date: updateTask.new_start_time ? dayjs(updateTask.new_start_time).format('YYYY-MM-DD') : task.date,
+              timeRange: updateTask.new_start_time && updateTask.new_end_time ? 
+                `${dayjs(updateTask.new_start_time).format('h:mm A')} - ${dayjs(updateTask.new_end_time).format('h:mm A')}` : 
+                task.timeRange
+            };
+          }
+          return task;
+        });
+        updateTasks(updatedTasks);
+      }
+
+      // Process event updates
+      if (jsonResponse.update_events && jsonResponse.update_events.length > 0) {
+        const updatedEvents = events.map(event => {
+          const updateEvent = jsonResponse.update_events.find(
+            update => 
+              update.original_event_name.toLowerCase() === event.title.toLowerCase() &&
+              dayjs(update.original_date).format('YYYY-MM-DD') === event.date.format('YYYY-MM-DD')
+          );
+
+          if (updateEvent) {
+            return {
+              title: updateEvent.new_event_name || event.title,
+              details: updateEvent.new_event_details || event.details,
+              date: updateEvent.new_date ? dayjs(updateEvent.new_date) : event.date,
+              startTime: updateEvent.new_start_time ? 
+                dayjs(dayjs().format('YYYY-MM-DD') + ' ' + updateEvent.new_start_time) : 
+                event.startTime,
+              endTime: updateEvent.new_end_time ? 
+                dayjs(dayjs().format('YYYY-MM-DD') + ' ' + updateEvent.new_end_time) : 
+                event.endTime
+            };
+          }
+          return event;
+        });
+        updateEvents(updatedEvents);
       }
     } catch (error) {
       console.error("Error processing new tasks and events:", error);
@@ -196,7 +366,11 @@ const ContextProvider = (props) => {
 
       // Send the updated chat history to Gemini
       response = await runChat(input, newChatHistory);
-      const correctResponse = response.slice(7,-4);
+      const correctResponse = response.substring(
+        response.indexOf('{'), 
+        response.lastIndexOf('}') + 1
+      );
+      console.log(correctResponse);
       const jsonify = JSON.parse(correctResponse);
       // Update the result with the new response
       setResultData(jsonify.full_response);
